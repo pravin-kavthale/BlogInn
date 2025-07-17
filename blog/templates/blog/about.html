@@ -1,0 +1,100 @@
+{%extends "blog/base.html"%}
+{%block content%}
+        <!-- Add Bootstrap CSS CDN in base.html or here -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            color: #2c3e50;
+            line-height: 1.7;
+        }
+
+        .hero {
+            background-color: #0b0c2a; /* deep navy tone to match navbar feel */
+            color: #ffffff;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            color: #dcdcdc;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            color: #0f3460;
+        }
+
+        p {
+            margin-bottom: 25px;
+        }
+
+        .highlight {
+            color: #e94560;
+            font-weight: bold;
+        }
+
+        footer {
+            background-color: #1a1a2e;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 {
+            font-size: 2em;
+            }
+        }
+        </style>
+
+        <!-- Hero Section -->
+        <header class="hero">
+        <h1>Welcome to BlogInn</h1>
+        <p>Your personal gateway to expressive and insightful blogging</p>
+        </header>
+
+        <!-- Page Content -->
+        <div class="container my-5">
+        <h2>What is BlogInn?</h2>
+        <p>
+            <strong>BlogInn</strong> is a modern, user-friendly blogging platform where anyone can create, share, and discover content across a variety of topics.
+            Whether you're a writer, a reader, or a learner — BlogInn is your digital space to grow and connect.
+        </p>
+
+        <h2>Our Vision</h2>
+        <p>
+            We believe in the power of storytelling and knowledge-sharing. Our mission is to empower individuals to express ideas,
+            share their journey, and learn from others in a clean and minimal interface. With built-in commenting, user profiles,
+            and author-doctor chat features (coming soon!), BlogInn isn't just a blog — it's a community.
+        </p>
+
+        <h2>About the Creator</h2>
+        <p>
+            BlogInn was developed by <span class="highlight">Pravin Pradip Kawthale</span>, a 4th-year AI & Data Science student with a passion for full-stack development,
+            machine learning, and building real-world solutions. BlogInn is part of his portfolio, blending backend engineering with
+            a clean user experience.
+        </p>
+
+        <h2>What’s Next?</h2>
+        <p>
+            The platform is growing. Future updates include AI-based blog suggestions, doctor-patient engagement modules,
+            and content analytics. Stay tuned and be part of this journey.
+        </p>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+        <p>&kavthalepravin; 2025 BlogInn. Designed and developed by Pravin Kawthale.</p>
+        </footer>
+
+{%endblock%}
