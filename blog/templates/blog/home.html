@@ -1,34 +1,240 @@
 {% extends "blog/base.html" %}
 
 {% block content %}
-    {% for post in posts %}
-        <!-- Post Header Row -->
-        <div class="container mt-4">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <div>
-                    <span class="text-muted fw-semibold me-3">
-                        <i class="bi bi-calendar-event"></i> {{ post.date_posted|date:"F j, Y" }}
-                    </span>
-                    <span class="text-primary fw-bold">
-                        <i class="bi bi-person-circle"></i> {{ post.author }}
-                    </span>
-                </div>
-                    {% if  post.author == request.user%}
-                        <div>
-                            <a href="{%url 'post-update' post.id %}" class="btn btn-sm btn-outline-secondary me-2">Update</a>
-                            <a href="{%url 'post-delete' post.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
-                        </div>
-                    {%endif%}
-            </div>
+<style>
+/* Overall background for the page */
+/* This style is now primarily managed in base.html body */
+/* body {
+    background-color: #1a1a2e;
+} */
 
-            <!-- Post Content -->
-            <div class="p-4 bg-light shadow-sm rounded-4">
-                <a class="mb-3 text-dark h3 d-block" href="{% url 'post-detail' post.id %}" style="text-decoration: none;">
-                    {{ post.title }}
-                </a>
-                <p class="text-secondary" style="font-size: 1.05rem;">{{ post.content }}</p>
-                <hr>
+/* Styles for the carousel container to blend with the dark background */
+.carousel-container {
+    position: relative;
+    overflow: hidden;
+    padding: 40px 0;
+    background-color: #1a1a2e; /* Matching the body background */
+}
+.carousel-viewport {
+    overflow: hidden;
+    width: 990px; /* 3 cards * (300px width + 30px gap) - last gap */
+    margin: 0 auto;
+}
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease;
+    gap: 30px;
+    width: max-content;
+}
+
+/* Blog card styling - background is a solid color as in the target image */
+.blog-card {
+    background: #2a2a4a; /* Darker background as in the 2nd image */
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Stronger shadow for depth */
+    width: 300px;
+    flex-shrink: 0;
+    transition: transform 0.3s, opacity 0.3s;
+    padding-bottom: 20px;
+    color: #e0e0e0; /* Light text color for contrast */
+    text-decoration: none; /* Ensure no underlines on links within cards */
+    position: relative; /* Added for positioning the tag */
+}
+.blog-card:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5); /* More prominent shadow on hover */
+}
+
+.blog-card.active {
+    transform: scale(1.05);
+    opacity: 1;
+}
+.blog-card.inactive {
+    opacity: 0.7; /* Slightly less opaque for inactive cards */
+}
+.blog-thumbnail {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 20px 20px 0 0;
+}
+
+/* Style for the #tags */
+.blog-tag {
+    position: absolute;
+    top: 20px; /* Adjust vertical position */
+    left: 20px; /* Adjust horizontal position */
+    background-color: rgba(114, 9, 183, 0.7); /* Purple with transparency */
+    color: #ffffff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    font-weight: bold;
+    z-index: 5; /* Ensure it's above the thumbnail if needed */
+    text-transform: capitalize; /* Capitalize tag text */
+}
+
+/* Styling for text within the blog card */
+.blog-card .p-3 {
+    padding: 15px; /* Adjust padding if needed */
+}
+
+.blog-card .text-muted {
+    color: #b0b0d0 !important; /* Lighter muted text for date and author */
+    font-size: 0.9em;
+}
+
+.blog-card h5.text-dark {
+    color: #ffffff; /* White color for blog titles */
+    margin-top: 10px;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+.blog-card h5.text-dark a {
+    color: inherit; /* Inherit white color from the h5 */
+    text-decoration: none; /* Remove underline from the link */
+}
+.blog-card h5.text-dark a:hover {
+    text-decoration: underline; /* Add underline on hover for better UX */
+}
+
+/* Carousel buttons - adjusted for dark theme */
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent white background */
+    color: #ffffff; /* White arrows */
+    border: 2px solid #ffffff; /* White border */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.3s, color 0.3s, border-color 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.carousel-button:hover {
+    background-color: #6a0dad; /* A purple shade on hover */
+    color: white;
+    border-color: #6a0dad;
+}
+.carousel-button.left {
+    left: 10px;
+}
+.carousel-button.right {
+    right: 10px;
+}
+
+/* Adjustments for the "Read the Blog" heading */
+.container.text-center.py-4 h2 {
+    color: #ffffff; /* Ensure the heading is white */
+    margin-bottom: 30px;
+}
+
+/* Styles for the edit/delete buttons within the blog card */
+.blog-card .btn-outline-secondary,
+.blog-card .btn-outline-danger {
+    color: #e0e0e0;
+    border-color: #e0e0e0;
+}
+
+.blog-card .btn-outline-secondary:hover {
+    background-color: #007bff; /* Example: a blue for edit hover */
+    color: white;
+    border-color: #007bff;
+}
+
+.blog-card .btn-outline-danger:hover {
+    background-color: #dc3545; /* Example: red for delete hover */
+    color: white;
+    border-color: #dc3545;
+}
+
+/* "Read full post" link styling */
+.read-more {
+    color: #8a2be2; /* A nice purple for links */
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.read-more:hover {
+    text-decoration: underline;
+}
+
+</style>
+
+<div class="container text-center py-4">
+    <h2 class="fw-bold mb-4" style="color: white;">Read the Blog</h2>
+</div>
+<div class="carousel-container">
+    <button class="carousel-button left" onclick="moveSlide(-1)">&#10094;</button>
+    <div class="carousel-viewport">
+        <div class="carousel-track" id="carousel">
+            {% for post in posts %}
+            <div class="blog-card inactive">
+                <img src="{{ post.image.url }}" alt="Blog Thumbnail" class="blog-thumbnail">
+                {# Optional: Add a tag div if your post model has a 'tag' field #}
+                {% if post.tag %}
+                    <div class="blog-tag">#{{ post.tag }}</div>
+                {% else %}
+                    {# Fallback tag if no specific tag is available for the post #}
+                    <div class="blog-tag">#trends</div>
+                {% endif %}
+                <div class="p-3">
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-calendar"></i> {{ post.date_posted|date:"F d, Y" }}<br>
+                        <i class="bi bi-person"></i> {{ post.author }}
+                    </p>
+                    <h5 class="text-dark">
+                        <a href="{% url 'post-detail' post.id %}">{{ post.title }}</a>
+                    </h5>
+                    <a href="{% url 'post-detail' post.id %}" class="read-more">Read full post &rarr;</a>
+                    {% if post.author == request.user %}
+                    <div class="mt-2">
+                        <a href="{% url 'post-update' post.id %}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'post-delete' post.id %}" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
+    <button class="carousel-button right" onclick="moveSlide(1)">&#10095;</button>
+</div>
+
+<script>
+let currentSlide = 0;
+const visibleCards = 3;
+const cardWidth = 330; // 300 width + 30 gap
+const track = document.getElementById('carousel');
+const cards = document.querySelectorAll('.blog-card');
+
+function updateCarousel() {
+    const offset = -currentSlide * cardWidth;
+    track.style.transform = `translateX(${offset}px)`;
+    cards.forEach((card, idx) => {
+        card.classList.toggle('active', idx >= currentSlide && idx < currentSlide + visibleCards);
+        card.classList.toggle('inactive', idx < currentSlide || idx >= currentSlide + visibleCards);
+    });
+}
+
+function moveSlide(step) {
+    const maxSlide = cards.length - visibleCards;
+    currentSlide = Math.max(0, Math.min(currentSlide + step, maxSlide));
+    updateCarousel();
+}
+
+updateCarousel();
+</script>
 {% endblock %}
