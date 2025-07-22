@@ -1,0 +1,17 @@
+{% extends "blog/base.html" %}
+{% block content %}
+  <article class="content-section">
+    <div class="media">
+      <img class="account-img" src="{{ object.author.profile.image.url }}" alt="Profile Picture" style="width: 100px; height: 100px; object-fit: cover;">
+
+      <div class="media-body">
+        
+        <h3 class="account-heading">Posted by {{ object.author }} </h3>
+        <p class="text-secondary">on{{ object.date_posted|date:"F d, Y" }}</p>
+      </div>
+    </div>
+    <hr>
+    <h3>{{ object.title }}</h3>
+    <p class="text-secondary">{{ object.content }}</p>
+  </article>
+{% endblock %}

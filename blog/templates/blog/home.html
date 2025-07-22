@@ -1,30 +1,34 @@
-{% extends "blog/base.html"%}
-{%block content%}
-    {% for post in posts%}
-            <!-- Add Bootstrap 5 CDN in your base template if not added -->
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+{% extends "blog/base.html" %}
 
-            <!-- Post Header (Author + Date) -->
-            <div class="text-center mt-4 mb-2">
-                <span class="text-muted fw-semibold me-2">
-                    <i class="bi bi-calendar-event"></i> On {{ post.date_posted| date:"F j, Y" }}
-                </span>
-                <span class="text-primary fw-bold">
-                    <i class="bi bi-person-circle"></i> By {{ post.author }}
-                </span>
-            </div>
-
-            <!-- Post Content Container -->
-            <div class="container">
-                <div class="p-4 bg-light shadow-sm rounded-4">
-                    <h2 class="mb-3 text-dark">{{ post.title }}</h2>
-                    <p class="text-secondary" style="font-size: 1.05rem;">{{ post.content }}</p>
-                    <hr>
+{% block content %}
+    {% for post in posts %}
+        <!-- Post Header Row -->
+        <div class="container mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                    <span class="text-muted fw-semibold me-3">
+                        <i class="bi bi-calendar-event"></i> {{ post.date_posted|date:"F j, Y" }}
+                    </span>
+                    <span class="text-primary fw-bold">
+                        <i class="bi bi-person-circle"></i> {{ post.author }}
+                    </span>
                 </div>
+                    {% if  post.author == request.user%}
+                        <div>
+                            <a href="{%url 'post-update' post.id %}" class="btn btn-sm btn-outline-secondary me-2">Update</a>
+                            <a href="{%url 'post-delete' post.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </div>
+                    {%endif%}
             </div>
 
-
-    {%endfor%}
-
-
-{%endblock%}
+            <!-- Post Content -->
+            <div class="p-4 bg-light shadow-sm rounded-4">
+                <a class="mb-3 text-dark h3 d-block" href="{% url 'post-detail' post.id %}" style="text-decoration: none;">
+                    {{ post.title }}
+                </a>
+                <p class="text-secondary" style="font-size: 1.05rem;">{{ post.content }}</p>
+                <hr>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
