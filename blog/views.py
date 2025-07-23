@@ -17,7 +17,7 @@ class UserPostListView(ListView):
     template_name="blog/users_post.html"
     context_object_name = 'posts'
     paginate_by=5
-
+    
     def get_queryset(self):
         user=get_object_or_404(User,username=self.kwargs.get('username'))
         return Post.objects.filter(author=user).order_by('-date_posted')
