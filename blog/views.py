@@ -1,5 +1,6 @@
-from django.shortcuts import render,get_object_or_404
-from .models import Post
+from django.shortcuts import render,get_object_or_404,redirect
+from .models import Post,Like
+from django.contrib.auth.decorators import login_required
 from django.views.generic import (
     ListView,
     DetailView,
@@ -8,6 +9,8 @@ from django.views.generic import (
     DeleteView
 
 )
+from users.models import Notification
+from django.db.models import Count,Q
 
 from users.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
@@ -32,6 +35,20 @@ class PostListView(ListView):
     template_name="blog/home.html"
     context_object_name = 'posts'
     ordering=['-date_posted']
+    
+    def get_queryset(self): #get the query set result from the database filter based on current user 
+        return Post.objects.annotate(  #anotate adds extra data ike count 
+            total_likes=Count('like', filter=Q(like__liked=True)) # Q executed and or not query by default it is and 
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            liked_posts = Like.objects.filter(user=self.request.user, liked=True).values_list('post_id', flat=True)
+        else:
+            liked_posts = []
+        context['liked_posts'] = liked_posts
+        return context
 
 class PostDetailView(DetailView):
     model=Post
@@ -74,4 +91,29 @@ def about(request):
 def contact(request):
     return render(request,'blog/contact.html',{"title":"Contact"})
 
+@login_required
+def like_post(request,pk):
+    post=get_object_or_404(Post,pk=pk)
+    isliked=False
 
+    like = post.like_set.filter(user=request.user).first()
+    if like:
+        like.liked = not like.liked
+        isliked = like.liked
+        like.save()
+    else:
+        Like.objects.create(user=request.user, post=post, liked=True)
+        isliked = True
+        
+ 
+    if isliked and post.author!=request.user:
+        Notification.objects.create(
+            sender=request.user,
+            receiver=post.author,
+            message=f"{request.user.username} liked your post: {post.title}",
+            blog=post,
+            type='like',
+            action_url=f'/post/{post.id}/'
+        )
+
+    return redirect('post-detail',pk=pk)

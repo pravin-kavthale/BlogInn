@@ -37,5 +37,8 @@ urlpatterns = [
     path("register/",user_views.register,name="user-register"),
     path('profileUpdate/',user_views.profileUpdate,name='profileUpdate'),
 
+    path('like/<int:pk>/',views.like_post,name='like_post'),
+    path('notification/',user_views.notification,name='notification'),
+
     
 ]

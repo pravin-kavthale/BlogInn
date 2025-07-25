@@ -4,6 +4,7 @@ from .form import UserRegistrationForm
 from django.contrib.auth.forms import UserCreationForm
 from .form import UserUpdateForm, UpdateProfileForm
 from django.contrib.auth.decorators import login_required
+from .models import profile,Notification
 
 
 def register(request):
@@ -41,3 +42,9 @@ def profileUpdate(request):
         'p_form':p_form
     }
     return render(request, 'users/profileUpdate.html',context)
+
+
+@login_required
+def notification(request):
+    notifications=Notification.objects.filter(receiver=request.user).order_by('-timestamp')
+    return render(request,'users/notification.html',{'notifications':notifications})

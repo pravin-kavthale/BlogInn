@@ -10,13 +10,27 @@ class Post(models.Model):
     date_posted=models.DateTimeField(default=timezone.now)
     author=models.ForeignKey(User,on_delete=models.CASCADE)
     image=models.ImageField(default="background.jpg",upload_to='blog')
+    liked_users = models.ManyToManyField(User, through='Like', related_name='liked_posts')
+    
 
     def __str__(self):
         return self.title
    
     def get_absolute_url(self):
         return reverse('post-detail',kwargs={'pk':self.pk})
+    
+    def total_likes(self):
+        return self.like_set.filter(liked=Ture).count()
+    
+
 class Like(models.Model):
     post=models.ForeignKey(Post,on_delete=models.CASCADE)
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     liked=models.BooleanField(default=False)
+    timestamp=models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('user', 'post')
+        
+    def __str__(self):
+        return f"{self.user.username} likes {self.post.title}"
