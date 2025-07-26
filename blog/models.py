@@ -11,7 +11,6 @@ class Post(models.Model):
     author=models.ForeignKey(User,on_delete=models.CASCADE)
     image=models.ImageField(default="background.jpg",upload_to='blog')
     liked_users = models.ManyToManyField(User, through='Like', related_name='liked_posts')
-    
 
     def __str__(self):
         return self.title
@@ -34,3 +33,13 @@ class Like(models.Model):
         
     def __str__(self):
         return f"{self.user.username} likes {self.post.title}"
+
+class Comment(models.Model):
+    post=models.ForeignKey(Post,on_delete=models.CASCADE)
+    sender=models.ForeignKey(User,on_delete=models.CASCADE)
+    content=models.TextField(max_length=200)
+    created_at=models.DateTimeField(default=timezone.now)
+    
+    def __str__(self):
+        return f"{self.sender.username} comment on {self.post.title}"
+
