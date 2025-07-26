@@ -140,7 +140,7 @@
 <div class="main-container">
   <div class="sidebar">
     <a href="#">Basic Info</a>
-    <a href="#">Posts</a>
+    <a href="{% url 'user-posts' user.username %}">Posts</a>
   
     <a href="{%url 'notification' %}">Notifications</a>
   </div>
