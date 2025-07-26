@@ -7,10 +7,10 @@ from django.views.generic import (
     CreateView,
     UpdateView,
     DeleteView
-
 )
 from users.models import Notification
 from django.db.models import Count,Q
+from .forms import commentForm
 
 from users.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
@@ -52,6 +52,36 @@ class PostListView(ListView):
 
 class PostDetailView(DetailView):
     model=Post
+    template_name='blog/post_detail.html'
+    context_object_name='post'
+
+    def get_context_data(self,**kwargs):
+        context=super().get_context_data(**kwargs)
+        post=self.get_object()
+        context['comment']=post.comment_set.all().order_by('-created_at')
+        context['form']=commentForm()
+        return context
+
+    def post(self,request,*args,**kwargs):
+        self.object=self.get_object()
+        post=self.object
+        form=commentForm(request.POST)
+        if request.user.is_authenticated:
+            if form.is_valid():
+                comment=form.save(commit=False)
+                comment.post=post
+                comment.sender=request.user
+                comment.save()
+                Notification.objects.create(
+                    blog=post,
+                    sender=request.user,
+                    receiver=post.author,
+                    type='Comment',
+                    message=f"{request.user.username} Commented on your post: {post.title} | Comment:{comment.content}",
+                    action_url=f'/post/{post.id}/'
+                )
+                return redirect('post-detail',pk=self.object.pk)
+            return redirect('login')
 
 class PostCreateView(LoginRequiredMixin,CreateView):
     model=Post
@@ -59,7 +89,7 @@ class PostCreateView(LoginRequiredMixin,CreateView):
 
     def form_valid(self,form):
         form.instance.author=self.request.user
-        return super().form_valid(form)\
+        return super().form_valid(form)
 
 class PostUpdateView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
     model=Post
@@ -117,3 +147,4 @@ def like_post(request,pk):
         )
 
     return redirect('post-detail',pk=pk)
+

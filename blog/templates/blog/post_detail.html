@@ -1,17 +1,50 @@
 {% extends "blog/base.html" %}
 {% block content %}
-  <article class="content-section">
-    <div class="media">
-      <img class="account-img" src="{{ object.author.profile.image.url }}" alt="Profile Picture" style="width: 100px; height: 100px; object-fit: cover;">
+<div class="container mt-4">
+  <h2 class="text-white mb-4 text-center">{{ object.title }}</h2>
 
-      <div class="media-body">
-        
-        <h3 class="account-heading">Posted by {{ object.author }} </h3>
-        <p class="text-secondary">on{{ object.date_posted|date:"F d, Y" }}</p>
+  <div class="row">
+    <!-- Left Column: Blog Post -->
+    <div class="col-md-9 mb-4">
+      <div class="p-4 bg-white rounded">
+        <p class="text-muted">by {{ object.author }} on {{ object.date_posted|date:"F d, Y" }}</p>
+        <hr>
+        <p class="text-dark">{{ object.content }}</p>
       </div>
     </div>
-    <hr>
-    <h3>{{ object.title }}</h3>
-    <p class="text-secondary">{{ object.content }}</p>
-  </article>
+
+    <!-- Right Column: Comments + Form -->
+    <div class="col-md-3">
+      <!-- Comments Section -->
+      <div class="bg-white rounded p-3 mb-3">
+        <h5 class="mb-3">Comments</h5>
+        {% if comment %}
+          {% for com in comment %}
+            <div class="mb-2 border-bottom pb-2">
+              <small class="text-muted">{{ com.sender.username }} | {{ com.created_at|date:"M d, Y H:i" }}</small>
+              <p class="mb-1">{{ com.content }}</p>
+              
+            </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted">No comments yet.</p>
+        {% endif %}
+      </div>
+
+      <!-- Comment Form -->
+      <div class="bg-white rounded p-3">
+        <h6>Leave a Comment</h6>
+        {% if user.is_authenticated %}
+          <form method="POST" class="d-flex">
+            {% csrf_token %}
+            {{ form.content }}
+            <button type="submit" class="btn btn-sm btn-primary ml-2">Post</button>
+          </form>
+        {% else %}
+          <p class="text-muted">You must <a href="{% url 'login' %}">log in</a> to comment.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
