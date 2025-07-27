@@ -1,50 +1,65 @@
 {% extends "blog/base.html" %}
+
 {% block content %}
-<div class="container mt-4">
-  <h2 class="text-white mb-4 text-center">{{ object.title }}</h2>
+<div class="container mx-auto px-4 py-8">
+    <h2 class="text-3xl sm:text-4xl font-bold mb-6 text-gray-900 text-center">{{ object.title }}</h2>
 
-  <div class="row">
-    <!-- Left Column: Blog Post -->
-    <div class="col-md-9 mb-4">
-      <div class="p-4 bg-white rounded">
-        <p class="text-muted">by {{ object.author }} on {{ object.date_posted|date:"F d, Y" }}</p>
-        <hr>
-        <p class="text-dark">{{ object.content }}</p>
-      </div>
-    </div>
-
-    <!-- Right Column: Comments + Form -->
-    <div class="col-md-3">
-      <!-- Comments Section -->
-      <div class="bg-white rounded p-3 mb-3">
-        <h5 class="mb-3">Comments</h5>
-        {% if comment %}
-          {% for com in comment %}
-            <div class="mb-2 border-bottom pb-2">
-              <small class="text-muted">{{ com.sender.username }} | {{ com.created_at|date:"M d, Y H:i" }}</small>
-              <p class="mb-1">{{ com.content }}</p>
-              
+    <div class="flex flex-col md:flex-row gap-8">
+        <div class="md:w-3/4 mb-4 md:mb-0">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <p class="text-sm text-gray-600 mb-4">by <span class="font-semibold text-gray-800">{{ object.author }}</span> on {{ object.date_posted|date:"F d, Y" }}</p>
+                <hr class="my-4 border-t border-gray-300">
+                <div class="prose max-w-none text-gray-800 leading-relaxed">
+                    {{ object.content|safe }}
+                </div>
             </div>
-          {% endfor %}
-        {% else %}
-          <p class="text-muted">No comments yet.</p>
-        {% endif %}
-      </div>
+        </div>
 
-      <!-- Comment Form -->
-      <div class="bg-white rounded p-3">
-        <h6>Leave a Comment</h6>
-        {% if user.is_authenticated %}
-          <form method="POST" class="d-flex">
-            {% csrf_token %}
-            {{ form.content }}
-            <button type="submit" class="btn btn-sm btn-primary ml-2">Post</button>
-          </form>
-        {% else %}
-          <p class="text-muted">You must <a href="{% url 'login' %}">log in</a> to comment.</p>
-        {% endif %}
-      </div>
+        <div class="md:w-1/4 flex flex-col"> {# Added flex flex-col to make this column a flex container #}
+            <div class="bg-white rounded-lg shadow-md p-4 mb-6 flex-grow overflow-y-auto max-h-[300px]"> {# Added flex-grow, overflow-y-auto, and max-h- for scrollability #}
+                <h5 class="text-xl font-semibold mb-4 text-gray-900">Comments</h5>
+                {% if comment %}
+                    <div class="space-y-4">
+                        {% for com in comment %}
+                            <div class="border-b border-gray-200 pb-3 last:border-b-0 last:pb-0">
+                                <div class="flex items-center justify-between mb-1">
+                                    <small class="text-xs text-gray-500">{{ com.sender.username }} | {{ com.created_at|date:"M d, Y H:i" }}</small>
+                                    {% if com.sender == request.user %}
+                                        <a href="{% url 'comment-delete' com.id %}"
+                                           class="text-gray-600 hover:text-red-500 transition-colors duration-200"
+                                           title="Delete Comment">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                <p class="text-sm text-gray-800">{{ com.content }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-gray-500 text-sm">No comments yet.</p>
+                {% endif %}
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-4 mt-auto"> {# mt-auto pushes this to the bottom of its flex container #}
+                <h6 class="text-lg font-semibold mb-4 text-gray-900">Leave a Comment</h6>
+                {% if user.is_authenticated %}
+                    <form method="POST" class="flex flex-col space-y-3">
+                        {% csrf_token %}
+                        <div>
+                            {# The form.content widget styling will come from forms.py #}
+                            {{ form.content }}
+                        </div>
+                        <button type="submit"
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-200 self-end">
+                            Post
+                        </button>
+                    </form>
+                {% else %}
+                    <p class="text-gray-600 text-sm">You must <a href="{% url 'login' %}" class="text-blue-500 hover:underline">log in</a> to comment.</p>
+                {% endif %}
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 {% endblock %}

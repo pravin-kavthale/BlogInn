@@ -1,35 +1,36 @@
 {% extends 'blog/base.html' %}
 {% block content %}
-<div class="container py-5">
-  <h2 class="mb-4 text-center text-dark fw-bold border-bottom pb-2">Contact Us</h2>
-  <p class="text-center text-secondary mb-5">
-    We would love to hear from you! Feel free to reach out with any questions, feedback, or just to say hello.  
+<div class="container mx-auto py-12 px-4 md:px-0"> {# px-4 added for small screen padding #}
+    <h2 class="mb-6 text-center text-white font-bold border-b-2 border-purple-500 pb-2 text-3xl">Contact Us</h2> {# Adjusted text-dark, fw-bold, border-bottom, pb-2 #}
+    <p class="text-center text-gray-400 mb-8 text-lg"> {# Adjusted text-secondary, mb-5 #}
+        We would love to hear from you! Feel free to reach out with any questions, feedback, or just to say hello.
+    </p>
 
-  <div class="row justify-content-center">
-    <div class="col-md-6">
+    <div class="flex justify-center"> {# Replaced row justify-content-center #}
+        <div class="w-full md:w-1/2"> {# Replaced col-md-6 #}
 
-      <div class="mb-4 d-flex align-items-center">
-        <i class="bi bi-envelope-fill fs-3 me-3 text-danger"></i>
-        <a href="mailto:kavthalepravin@gmail.com" class="text-decoration-none fs-5 text-dark">
-          kavthalepravin@gmail.com
-        </a>
-      </div>
+            <div class="mb-6 flex items-center"> {# Adjusted mb-4, d-flex, align-items-center #}
+                <i class="bi bi-envelope-fill text-3xl mr-4 text-purple-500"></i> {# Adjusted fs-3, me-3, text-danger. Changed color to purple. #}
+                <a href="mailto:kavthalepravin@gmail.com" class="text-decoration-none text-xl text-white hover:text-purple-400 transition-colors duration-200"> {# Adjusted fs-5, text-dark, text-decoration-none #}
+                    kavthalepravin@gmail.com
+                </a>
+            </div>
 
-      <div class="mb-4 d-flex align-items-center">
-        <i class="bi bi-telephone-fill fs-3 me-3 text-success"></i>
-        <a href="tel:+918055217077" class="text-decoration-none fs-5 text-dark">
-          +91 80552 17077
-        </a>
-      </div>
+            <div class="mb-6 flex items-center"> {# Adjusted mb-4, d-flex, align-items-center #}
+                <i class="bi bi-telephone-fill text-3xl mr-4 text-green-500"></i> {# Adjusted fs-3, me-3, text-success #}
+                <a href="tel:+918055217077" class="text-decoration-none text-xl text-white hover:text-green-400 transition-colors duration-200"> {# Adjusted fs-5, text-dark, text-decoration-none #}
+                    +91 80552 17077
+                </a>
+            </div>
 
-      <div class="mb-4 d-flex align-items-center">
-        <i class="bi bi-whatsapp fs-3 me-3 text-success"></i>
-        <a href="https://wa.me/918055217077" class="text-decoration-none fs-5 text-dark" target="_blank">
-          Message on WhatsApp
-        </a>
-      </div>
+            <div class="mb-6 flex items-center"> {# Adjusted mb-4, d-flex, align-items-center #}
+                <i class="bi bi-whatsapp text-3xl mr-4 text-green-500"></i> {# Adjusted fs-3, me-3, text-success #}
+                <a href="https://wa.me/918055217077" class="text-decoration-none text-xl text-white hover:text-green-400 transition-colors duration-200" target="_blank"> {# Adjusted fs-5, text-dark, text-decoration-none #}
+                    Message on WhatsApp
+                </a>
+            </div>
 
+        </div>
     </div>
-  </div>
 </div>
 {% endblock %}

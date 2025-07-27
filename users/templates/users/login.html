@@ -1,76 +1,91 @@
 {% extends 'blog/base.html' %}
+{# No need for {% load static %} if not using static files here #}
 
 {% block content %}
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-auto">
-      <div class="card shadow-lg" style=" height: 400px; width: 400px;">
-        <div class="card-body" style=" background-color:aliceblue;border-radius: 15px;">
-          <h3 class="card-title text-center mb-4" style="color:black">Login to Your Account</h3>
+{# The main container for the login form, now without a background image #}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    {# Changed card background color to creamy white and removed transparency/blur #}
+    <div class="max-w-md w-full p-8 rounded-lg shadow-lg bg-[#FDF9F3]"> {# Changed bg-white bg-opacity-10 backdrop-filter backdrop-blur-md border border-gray-200 border-opacity-20 to bg-[#FDF9F3] #}
+        <div>
+            {# Adjusted heading and paragraph text colors for better contrast on light background #}
+            <h3 class="text-3xl font-extrabold text-gray-800 text-center mb-6">Login to Your Account</h3> {# Changed text-white to text-gray-800 #}
+            <p class="mt-2 text-center text-sm text-gray-600"> {# Changed text-gray-300 to text-gray-600 #}
+                Your personal gateway to expressive and insightful blogging.
+            </p>
+        </div>
 
-          {% if form.non_field_errors %}
-            <div class="alert alert-danger alert-dismissible fade show non-field-error" role="alert">
-              {{ form.non_field_errors }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        {# Non-field errors using Tailwind CSS #}
+        {% if form.non_field_errors %}
+            <div class="bg-red-500 text-white px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Error!</strong>
+                <span class="block sm:inline">{{ form.non_field_errors }}</span>
+                <span class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer" onclick="this.parentElement.style.display='none';">
+                    <svg class="fill-current h-6 w-6 text-white" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.103l-2.651 3.746a1.2 1.2 0 1 1-1.697-1.697l3.746-2.651-3.746-2.651a1.2 1.2 0 0 1 1.697-1.697L10 8.897l2.651-3.746a1.2 1.2 0 1 1 1.697 1.697L11.103 10l3.746 2.651a1.2 1.2 0 0 1 0 1.698z"/></svg>
+                </span>
             </div>
-          {% endif %}
+        {% endif %}
 
-          <form method="POST" novalidate>
+        <form method="POST" novalidate class="space-y-4">
             {% csrf_token %}
 
-            <div class="mb-3">
-              <label for="id_username" class="form-label" style="color:black ">Username</label>
-              <input type="text" name="username" class="form-control" id="id_username"
-                     value="{{ form.username.value|default_if_none:'' }}">
-              {% for error in form.username.errors %}
-                <div class="text-danger small">{{ error }}</div>
-              {% endfor %}
+            {# Username Field #}
+            <div>
+                <label for="id_username" class="block text-sm font-medium text-gray-700">Username</label> {# Changed text-gray-200 to text-gray-700 #}
+                <input type="text" name="username" id="id_username"
+                       class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm" {# Changed bg-gray-800 bg-opacity-30 border-gray-600 text-white placeholder-gray-400 to solid colors for light card #}
+                       value="{{ form.username.value|default_if_none:'' }}">
+                {% for error in form.username.errors %}
+                    <div class="text-red-600 text-xs mt-1">{{ error }}</div> {# Changed text-red-400 to text-red-600 #}
+                {% endfor %}
             </div>
 
-            <div class="mb-3">
-              <label for="id_password" class="form-label" style="color:black">Password</label>
-              <input type="password" name="password" class="form-control" id="id_password">
-              {% for error in form.password.errors %}
-                <div class="text-danger small">{{ error }}</div>
-              {% endfor %}
+            {# Password Field #}
+            <div>
+                <label for="id_password" class="block text-sm font-medium text-gray-700">Password</label> {# Changed text-gray-200 to text-gray-700 #}
+                <input type="password" name="password" id="id_password"
+                       class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"> {# Changed bg-gray-800 bg-opacity-30 border-gray-600 text-white placeholder-gray-400 to solid colors for light card #}
+                {% for error in form.password.errors %}
+                    <div class="text-red-600 text-xs mt-1">{{ error }}</div> {# Changed text-red-400 to text-red-600 #}
+                {% endfor %}
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Login</button>
-              <small class="text-muted ml-2">
-                <a href="{% url 'password_reset' %}" >Forgot password?</a>
-              </small>
-          </form>
+            {# Login Button #}
+            <button type="submit"
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out">
+                Login
+            </button>
 
-          <p class="mt-3 text-center" style="color:black">
-            Don't have an account? <a href="{% url 'user-register' %}">Create One</a>
-          </p>
+            {# Forgot password link #}
+            <div class="text-right text-sm">
+                <a href="{% url 'password_reset' %}" class="font-medium text-blue-600 hover:text-blue-700">Forgot password?</a> {# Changed text-blue-400 to text-blue-600, hover to 700 #}
+            </div>
+        </form>
 
-        </div>
-      </div>
+        {# Don't have an account link #}
+        <p class="mt-4 text-center text-sm text-gray-700"> {# Changed text-gray-300 to text-gray-700 #}
+            Don't have an account? <a href="{% url 'user-register' %}" class="font-medium text-blue-600 hover:text-blue-700">Create One</a> {# Changed text-blue-400 to text-blue-600, hover to 700 #}
+        </p>
+
     </div>
-  </div>
 </div>
 
 <script>
-  function removeAllErrors() {
-    // Hide field-level errors
-    document.querySelectorAll('.text-danger').forEach(el => {
-      el.style.display = 'none';
-    });
-
-    // Hide non-field alert if visible
-    const alertBox = document.querySelector('.non-field-error');
-    if (alertBox) {
-      alertBox.style.display = 'none';
+    function removeAllErrors() {
+        document.querySelectorAll('.text-red-600').forEach(el => { // Updated selector for errors
+            el.classList.add('hidden');
+        });
+        const alertBox = document.querySelector('[role="alert"]');
+        if (alertBox) {
+            alertBox.classList.add('hidden');
+        }
     }
-  }
 
-  document.addEventListener('DOMContentLoaded', function () {
-    const inputs = document.querySelectorAll('input');
-    inputs.forEach(input => {
-      input.addEventListener('focus', removeAllErrors);
-      input.addEventListener('input', removeAllErrors);
+    document.addEventListener('DOMContentLoaded', function () {
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', removeAllErrors);
+            input.addEventListener('input', removeAllErrors);
+        });
     });
-  });
 </script>
 {% endblock %}

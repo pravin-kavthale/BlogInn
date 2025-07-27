@@ -68,6 +68,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -129,8 +130,6 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-MEDIA_ROOT=os.path.join(BASE_DIR, 'media')
-MEDIA_URL="/media/"
 
 CRISPY_TEMPLATE_PACK='bootstrap4'
 
@@ -148,3 +147,6 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 TAILWIND_APP_NAME = 'theme'
 INTERNAL_IPS = ['127.0.0.1'] 
+
+MEDIA_ROOT=os.path.join(BASE_DIR, 'media')
+MEDIA_URL="/media/"

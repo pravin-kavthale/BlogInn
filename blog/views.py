@@ -1,5 +1,5 @@
-from django.shortcuts import render,get_object_or_404,redirect
-from .models import Post,Like
+from django.shortcuts import render,get_object_or_404,redirect,reverse
+from .models import Post,Like,Comment
 from django.contrib.auth.decorators import login_required
 from django.views.generic import (
     ListView,
@@ -11,6 +11,7 @@ from django.views.generic import (
 from users.models import Notification
 from django.db.models import Count,Q
 from .forms import commentForm
+from django import forms
 
 from users.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
@@ -60,6 +61,7 @@ class PostDetailView(DetailView):
         post=self.get_object()
         context['comment']=post.comment_set.all().order_by('-created_at')
         context['form']=commentForm()
+        context['request']=self.request
         return context
 
     def post(self,request,*args,**kwargs):
@@ -86,14 +88,18 @@ class PostDetailView(DetailView):
 class PostCreateView(LoginRequiredMixin,CreateView):
     model=Post
     fields=['title','content','image']
-
+    
+    
+    template_name='blog/post_create.html'
     def form_valid(self,form):
         form.instance.author=self.request.user
         return super().form_valid(form)
+    
 
 class PostUpdateView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
     model=Post
     fields=['title','content','image']
+    template_name='blog/post_update.html'
     def form_valid(self,form):
         form.instance.author=self.request.user
         return super().form_valid(form)
@@ -115,9 +121,19 @@ class PostDeleteView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
         else:
             return False
 
-def about(request):
-    return render(request,'blog/about.html',{"title":"About"})
-
+class CommentDeleteView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
+    model=Comment
+    success_url="/"
+    def test_func(self):
+        comment=self.get_object()
+        if comment.sender==self.request.user:
+            return True
+        else:
+            return False
+    def get_success_url(self):
+        # Redirect back to the blog post after deletion
+        return reverse("post-detail", kwargs={"pk": self.get_object().post.pk})
+    
 def contact(request):
     return render(request,'blog/contact.html',{"title":"Contact"})
 
@@ -147,4 +163,23 @@ def like_post(request,pk):
         )
 
     return redirect('post-detail',pk=pk)
+
+def about(request):
+    links = [
+        {'name': 'Open roles', 'href': '#'},
+        {'name': 'Our values', 'href': '#'},
+        {'name': 'Meet our leadership', 'href': '#'},
+    ]
+    stats = [
+        {'name': 'Offices worldwide', 'value': '12'},
+        {'name': 'Full-time colleagues', 'value': '300+'},
+        {'name': 'Hours per week', 'value': '40'},
+        {'name': 'Paid time off', 'value': 'Unlimited'},
+    ]
+
+    context = {
+        'links': links,
+        'stats': stats,
+    }
+    return render(request, 'blog/about.html', context)
 

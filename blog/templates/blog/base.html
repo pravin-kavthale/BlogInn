@@ -4,172 +4,73 @@
   <meta charset="UTF-8">
   <title>BlogInn</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
-  <style>
-    /* Dark solid background for body */
-    body {
-      background-color: #1a1a2e; /* Solid dark purple background */
-      color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    /* Ensure main content container also has the same dark background */
-    .container.mt-4 {
-      background-color: #1a1a2e !important; /* Forces this container to match body */
-      color: inherit; /* Inherit text color from body */
-    }
-
-    /* Keep other general transparent rules */
-    .card, .content, main, section {
-      background-color: transparent !important;
-      color: inherit;
-    }
-
-    /* Updated Navbar Styles */
-    .navbar-custom {
-      background-color: #1a1a2e; /* Match body background for seamless look */
-      box-shadow: none; /* Remove any prominent shadow */
-      padding-top: 20px; /* Add some padding to the top */
-      padding-bottom: 20px; /* Add some padding to the bottom */
-    }
-
-    /* Brand/Logo styling */
-    .navbar-custom .navbar-brand {
-      margin-right: auto; /* Push navigation links to center */
-    }
-
-    .navbar-custom .navbar-brand img { /* Styles for the logo image */
-      height: 40px; /* Adjust height as needed */
-      width: auto; /* Maintain aspect ratio */
-    }
-
-    /* Navigation links styling */
-    .navbar-custom .navbar-nav.mx-auto { /* Class for centering links */
-        flex-direction: row; /* Ensure links stay in a row */
-        justify-content: center; /* Center horizontally */
-        flex-grow: 1; /* Allow them to take available space */
-    }
-
-    .navbar-custom .nav-link {
-      color: #ffffff !important; /* White color for links */
-      font-weight: 500;
-      margin: 0 15px; /* Adjust spacing between centered links */
-    }
-
-    .navbar-custom .nav-link:hover {
-      background-color: transparent; /* No background on hover */
-      color: #8a2be2 !important; /* A subtle purple on hover */
-      text-decoration: underline; /* Underline on hover for better UX */
-      border-radius: 0; /* Remove border-radius on hover */
-    }
-
-    /* Login/Logout button styling */
-    .btn-login-style {
-        background-color: #ffffff; /* White background */
-        color: #1a1a2e !important; /* Dark text */
-        border: none;
-        border-radius: 25px; /* More rounded corners */
-        padding: 8px 20px;
-        font-weight: bold;
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    .btn-login-style:hover {
-        background-color: #e0e0e0; /* Slightly darker white on hover */
-        color: #1a1a2e !important;
-    }
-
-    .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 2px solid #e94560;
-    }
-
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .section-title {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #ffffff;
-    }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
-<body>
+<body class="bg-[#1a1a2e] text-white font-sans">
 
-<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
-  <div class="container">
-    <a class="navbar-brand fw-semibold" href="#">
+<nav class="bg-[#1a1a2e] text-white py-5" x-data="{ open: false }">
+  <div class="container mx-auto flex items-center justify-between px-4">
+    <!-- Logo -->
+    <a href="#" class="flex items-center">
       {% load static %}
-      <img src="{% static 'logo/logo.png' %}" alt="Blog Logo">
+      <img src="{% static 'logo/logo.png' %}" alt="Blog Logo" class="h-10 w-auto">
     </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
-      aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+    <!-- Mobile toggle button -->
+    <button @click="open = !open" class="md:hidden text-white focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
+           viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+        <path x-show="!open" d="M4 6h16M4 12h16M4 18h16" />
+        <path x-show="open" d="M6 18L18 6M6 6l12 12" />
+      </svg>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarContent">
-      {# Centered navigation links #}
-      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'blog-home' %}">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{%url 'post-create' %}">Create</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'blog-about' %}">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'blog-contact' %}">Contact</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'profile' %}">Profile</a>
-        </li>
+    <!-- Nav + Auth container -->
+    <div :class="{ 'block': open, 'hidden': !open }" class="w-full md:flex md:items-center md:justify-between hidden mt-4 md:mt-0">
+      <!-- Centered Nav links -->
+      <ul class="flex flex-col md:flex-row md:space-x-6 justify-center w-full text-center">
+        <li><a href="{% url 'blog-home' %}" class="hover:text-purple-400 hover:underline">Home</a></li>
+        <li><a href="{% url 'post-create' %}" class="hover:text-purple-400 hover:underline">Create</a></li>
+        <li><a href="{% url 'blog-about' %}" class="hover:text-purple-400 hover:underline">About</a></li>
+        <li><a href="{% url 'blog-contact' %}" class="hover:text-purple-400 hover:underline">Contact</a></li>
+        <li><a href="{% url 'profile' %}" class="hover:text-purple-400 hover:underline">Profile</a></li>
       </ul>
 
-      {# Login/Logout button on the far right #}
-      <ul class="navbar-nav">
+      <!-- Auth Buttons aligned to right -->
+      <div class="mt-4 md:mt-0 md:ml-auto text-center md:text-right">
         {% if request.user.is_authenticated %}
-          <li class="nav-item">
-            <form method="POST" action="{% url 'logout' %}">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-login-style">Logout</button>
-            </form>
-          </li>
+          <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="bg-white text-[#1a1a2e] font-bold rounded-full px-5 py-2 hover:bg-gray-200">
+              Logout
+            </button>
+          </form>
         {% else %}
-          <li class="nav-item">
-            <a class="btn btn-login-style" href="{% url 'login' %}">Login</a>
-          </li>
+          <a href="{% url 'login' %}" class="bg-white text-[#1a1a2e] font-bold rounded-full px-5 py-2 hover:bg-gray-200">
+            Login
+          </a>
         {% endif %}
-      </ul>
+      </div>
     </div>
   </div>
 </nav>
 
-<div>
+<div class="container mx-auto mt-4 bg-[#1a1a2e] px-4">
   {% if messages %}
     {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      <div class="bg-green-500 text-white px-4 py-3 rounded relative mb-4">
         {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="absolute top-2 right-2 text-white" onclick="this.parentElement.remove()">
+          &times;
+        </button>
       </div>
     {% endfor %}
   {% endif %}
   {% block content %}
   {% endblock %}
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

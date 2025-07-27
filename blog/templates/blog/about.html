@@ -1,41 +1,73 @@
-{% extends "blog/base.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - BlogInn</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    </head>
+<body class="font-sans antialiased">
+    <div class="relative isolate overflow-hidden bg-gray-900 min-h-screen flex flex-col">
+        <img
+            alt=""
+            src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&crop=focalpoint&fp-y=.8&w=2830&h=1500&q=80&blend=111827&sat=-100&exp=15&blend-mode=multiply"
+            class="absolute inset-0 -z-10 h-full w-full object-cover object-right md:object-center"
+        />
+        <div
+            aria-hidden="true"
+            class="hidden sm:absolute sm:-top-10 sm:right-1/2 sm:-z-10 sm:mr-10 sm:block sm:transform-gpu sm:blur-3xl"
+        >
+            <div
+                style="
+                    clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%);
+                "
+                class="aspect-[1097/845] w-[68.5625rem] bg-gradient-to-tr from-[#ff4694] to-[#776fff] opacity-20"
+            ></div>
+        </div>
+        <div
+            aria-hidden="true"
+            class="absolute -top-52 left-1/2 -z-10 -translate-x-1/2 transform-gpu blur-3xl sm:top-[-28rem] sm:ml-16 sm:translate-x-0 sm:transform-gpu"
+        >
+            <div
+                style="
+                    clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%);
+                "
+                class="aspect-[1097/845] w-[68.5625rem] bg-gradient-to-tr from-[#ff4694] to-[#776fff] opacity-20"
+            ></div>
+        </div>
 
-<header class="bg-[#0b0c2a] text-white py-16 text-center">
-  <h1 class="text-4xl md:text-5xl font-semibold mb-2">Welcome to BlogInn</h1>
-  <p class="text-lg text-gray-300">Your personal gateway to expressive and insightful blogging</p>
-</header>
-<div class="max-w-screen-lg mx-auto px-8 my-10 leading-relaxed text-[#2c3e50] font-sans">
- 
-  <h2 class="text-2xl font-semibold mb-3 text-[#0f3460]">What is BlogInn?</h2>
-  <p class="mb-6">
-    <strong>BlogInn</strong> is a modern, user-friendly blogging platform where anyone can create, share, and discover content
-    across a variety of topics. Whether you're a writer, a reader, or a learner — BlogInn is your digital space to grow and connect.
-  </p>
+        <div class="flex-grow py-24 sm:py-32"> {# Added flex-grow and padding #}
+            <div class="mx-auto max-w-7xl px-6 lg:px-8 relative z-20">
+                <div class="mx-auto max-w-2xl lg:mx-0">
+                    <h2 class="text-4xl font-bold tracking-tight text-white sm:text-6xl">Work with us</h2>
+                    <p class="mt-6 text-lg leading-8 text-gray-300">
+                        At <strong>BlogInn</strong>, we are dedicated to transforming the way you share and discover content online. Our mission is to provide a seamless and insightful blogging experience, connecting writers and readers from around the globe.
+                    </p>
+                </div>
+                <div class="mx-auto mt-10 max-w-2xl lg:mx-0 lg:max-w-none">
+                    <div class="grid grid-cols-1 gap-x-8 gap-y-6 text-base font-semibold leading-7 text-white sm:grid-cols-2 md:flex lg:gap-x-10">
+                        {% for link in links %}
+                            <a href="{{ link.href }}">
+                                {{ link.name }} <span aria-hidden="true">&rarr;</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    <dl class="mt-16 grid grid-cols-1 gap-8 sm:mt-20 sm:grid-cols-2 lg:grid-cols-4">
+                        {% for stat in stats %}
+                            <div class="flex flex-col-reverse">
+                                <dt class="text-base leading-7 text-gray-300">{{ stat.name }}</dt>
+                                <dd class="text-2xl font-bold leading-9 tracking-tight text-white">{{ stat.value }}</dd>
+                            </div>
+                        {% endfor %}
+                    </dl>
+                </div>
+            </div>
+        </div>
 
-  <h2 class="text-2xl font-semibold mb-3 text-[#0f3460]">Our Vision</h2>
-  <p class="mb-6">
-    We believe in the power of storytelling and knowledge-sharing. Our mission is to empower individuals to express ideas,
-    share their journey, and learn from others in a clean and minimal interface. With built-in commenting, user profiles,
-    and author-doctor chat features (coming soon!), BlogInn isn't just a blog — it's a community.
-  </p>
+        <footer class="p-4 text-center text-white relative z-20"> {# Added relative z-20 for clarity #}
+            <p>&copy; 2025 BlogInn. All rights reserved.</p>
+        </footer>
+    </div>
 
-  <h2 class="text-2xl font-semibold mb-3 text-[#0f3460]">About the Creator</h2>
-  <p class="mb-6">
-    BlogInn was developed by <span class="text-[#e94560] font-bold">Pravin Pradip Kawthale</span>, a 4th-year AI & Data Science student with a passion for full-stack development,
-    machine learning, and building real-world solutions. BlogInn is part of his portfolio, blending backend engineering with
-    a clean user experience.
-  </p>
-
-  <h2 class="text-2xl font-semibold mb-3 text-[#0f3460]">What’s Next?</h2>
-  <p class="mb-6">
-    The platform is growing. Future updates include AI-based blog suggestions, doctor-patient engagement modules,
-    and content analytics. Stay tuned and be part of this journey.
-  </p>
-</div>
-
-<footer class="bg-[#1a1a2e] text-white text-center py-4 mt-10">
-  <p>&copy; 2025 BlogInn. Designed and developed by Pravin Kawthale.</p>
-</footer>
-
-{% endblock %}
+</body>
+</html>

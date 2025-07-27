@@ -1,26 +1,45 @@
 {% extends "blog/base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4">Notifications</h2>
-    {% if notifications%}
-     <ul class="list-group">
-        {% for post in notifications%}
-            <li class="list-group-item d-flex justify-content-between align-items-center {% if not post.is_read %}list-group-item-info{% endif %}">
+<div class="container mx-auto mt-8 p-4">
+    <h2 class="text-3xl font-bold mb-6 text-white text-center">Notifications</h2>
 
-                <strong>{{post.type|capfirst}}:</strong> {{post.message}}<br>
-                <small class="text_muted">From: {{post.sender.username}} | {{ post.timestamp|date:"M d, Y H:i" }}</small>
-        
+    {% if notifications %}
+        <ul class="space-y-4">
+            {% for post in notifications %}
+                <li class="p-4 rounded-lg shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center
+                           transition-all duration-300 ease-in-out
+                           {% if not post.is_read %}
+                               bg-gray-800 border-l-4 border-purple-500 hover:bg-gray-700
+                           {% else %}
+                               bg-gray-900 border border-gray-700 hover:bg-gray-800
+                           {% endif %}">
+
+                    <div class="mb-2 md:mb-0 md:mr-4 flex-grow">
+                        <p class="text-gray-200">
+                            <a href="#" class="font-bold text-purple-400 hover:underline">{{ post.sender.username }}</a>
+                            <strong class="text-purple-400">{{ post.type|capfirst }}:</strong>
+                            <br>
+                            {{ post.message }}
+                        </p>
+                        <small class="text-gray-400 block mt-1">
+                            <span class="font-semibold text-gray-300">{{ post.sender.username }}</span> | {{ post.timestamp|date:"M d, Y H:i" }}
+                        </small>
+                    </div>
+
                     {% if post.action_url %}
-                        <a href="{{ post.action_url }}" class="btn btn-sm btn-primary">View</a>
+                        <div class="flex-shrink-0 mt-2 md:mt-0">
+                            <a href="{{ post.action_url }}"
+                               class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+                                View
+                            </a>
+                        </div>
                     {% endif %}
-            </li>
-        {% endfor %}
-     </ul>
+                </li>
+            {% endfor %}
+        </ul>
     {% else %}
-    <p>No notifications yet.</p>
-    
-    {% endif%}
-    </div>
+        <p class="text-center text-gray-400 text-lg mt-8">No notifications yet.</p>
+    {% endif %}
+</div>
 {% endblock %}
-

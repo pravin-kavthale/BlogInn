@@ -1,20 +1,19 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-<div class="container py-5">
-  <h2 class="mb-4 text-center text-dark fw-bold border-bottom pb-2">Contact Us</h2>
-
-  <div class="row justify-content-center">
-    <div class="col-md-6 text-center">
-      <div class="card shadow p-4">
-        <h4 class="mb-3 text-success">You have been logged out successfully!</h4>
-        <p class="text-muted">Thank you for visiting our site.</p>
-        <form method="POST" action="{% url 'login' %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Log in</button>
+<div class="min-h-screen bg-[#1a1a2e] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full">
+        <div class="bg-[#FDF9F3] p-8 rounded-lg shadow-lg text-center"> {# Card background creamy white #}
+            <h4 class="text-2xl font-semibold mb-3 text-purple-600">You have been logged out successfully!</h4> {# Adjusted text-success to purple #}
+            <p class="text-gray-600 mb-6">Thank you for visiting our site.</p> {# Adjusted text-muted #}
+            <form method="POST" action="{% url 'login' %}" class="inline-block"> {# Use inline-block to center the form itself if needed #}
+                {% csrf_token %}
+                <button type="submit"
+                        class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out"> {# Adjusted btn btn-danger to purple button style #}
+                    Log in
+                </button>
             </form>
-      </div>
+        </div>
     </div>
-  </div>
 </div>
 {% endblock %}
