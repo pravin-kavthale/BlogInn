@@ -37,9 +37,10 @@ class PostListView(ListView):
     context_object_name = 'posts'
     ordering=['-date_posted']
     
-    def get_queryset(self): #get the query set result from the database filter based on current user 
-        return Post.objects.annotate(  #anotate adds extra data ike count 
-            total_likes=Count('like', filter=Q(like__liked=True)) # Q executed and or not query by default it is and 
+    def get_queryset(self): 
+        
+        return Post.objects.annotate(  
+            total_likes=Count('like', filter=Q(like__liked=True)) 
         )
 
     def get_context_data(self, **kwargs):
@@ -50,6 +51,8 @@ class PostListView(ListView):
             liked_posts = []
         context['liked_posts'] = liked_posts
         return context
+
+        
 
 class PostDetailView(DetailView):
     model=Post
@@ -197,3 +200,17 @@ def about(request):
     }
     return render(request, 'blog/about.html', context)
 
+class searchView(ListView):
+    model=Post
+    template_name='blog/search.html'
+    context_object_name='posts'
+
+    def get_queryset(self):
+        query=self.request.GET.get('q')
+        if query:
+            return Post.objects.filter(
+                Q(title__icontains=query)|Q(author__username__icontains=query)
+            ).distinct()
+        else:
+            return Post.objects.none()
+        

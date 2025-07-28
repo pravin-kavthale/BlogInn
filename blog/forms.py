@@ -13,9 +13,5 @@ class commentForm(forms.ModelForm):
             }),
         }
 
-class searchForm(forms.ModelForm):
-    class  Meta:
-        modle=Post
-        fields=[]
 
 

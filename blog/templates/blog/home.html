@@ -2,36 +2,59 @@
 
 {% block content %}
 
-<div class="container mx-auto text-center py-4">
-    <h2 class="font-bold text-white mb-8 text-3xl md:text-4xl">Read the Blog</h2>
+<!-- Page Title -->
+<div class="container mx-auto text-center py-6">
+    <h2 class="font-bold text-white text-3xl md:text-4xl">Read Blog Posts</h2>
 </div>
 
+<!-- Search Form -->
+<div class="flex justify-center mb-8">
+    <form method="get" action="{% url 'search' %}" class="flex items-center gap-2 bg-[#2a2a4a] p-3 rounded-lg shadow-md w-full max-w-lg">
+        <input 
+            type="text" 
+            name="q" 
+            value="{{ request.GET.q }}" 
+            placeholder="Search for blogs..." 
+            class="w-full px-4 py-2 rounded bg-[#1f1f3a] text-white placeholder-[#aaa] focus:outline-none focus:ring-2 focus:ring-[#9c27b0]"
+        >
+        <button type="submit" class="px-4 py-2 bg-[#9c27b0] hover:bg-[#7b1fa2] text-white rounded-lg transition-all duration-300">
+            Search
+        </button>
+    </form>
+</div>
+
+<!-- No Results Message -->
+{% if posts|length == 0 %}
+    <p class="text-center text-gray-400 text-lg">No blog posts found for your query.</p>
+{% endif %}
+
+<!-- Blog Cards Carousel -->
 <div class="relative overflow-hidden py-10 bg-[#1a1a2e]">
     <button class="carousel-button absolute top-1/2 -translate-y-1/2 bg-transparent border-none text-white rounded-full w-10 h-10 text-xl cursor-pointer z-10 flex items-center justify-center transition-all duration-300 hover:bg-[#6a0dad] hover:text-white left-2 md:left-4" onclick="moveSlide(-1)">&#10094;</button>
 
-    <div class="overflow-hidden w-[990px] mx-auto px-4"> {# Added px-4 for horizontal padding #}
+    <div class="overflow-hidden w-[990px] mx-auto px-4">
         <div class="carousel-track flex transition-transform duration-500 ease-in-out gap-[30px] pt-[30px] pb-[30px]" id="carousel">
             {% for post in posts %}
             <div class="blog-card flex-shrink-0 bg-[#2a2a4a] rounded-2xl shadow-lg shadow-black/40 w-[300px] transition-all duration-300 pb-5 text-[#e0e0e0] no-underline relative border-2 border-transparent hover:-translate-y-2 hover:shadow-xl hover:shadow-[#9c27b0]/70 hover:border-[#9c27b0]/70">
                 <img src="{{ post.image.url }}" alt="Blog Thumbnail" class="w-full h-[180px] object-cover rounded-t-2xl">
                 {% if post.tag %}
-                    <div class="blog-tag absolute top-[15px] left-[15px] bg-[rgba(114,9,183,0.7)] text-white px-[10px] py-[5px] rounded font-bold text-xs capitalize z-10">#{{ post.tag }}</div>
+                    <div class="absolute top-[15px] left-[15px] bg-[rgba(114,9,183,0.7)] text-white px-3 py-1 rounded text-xs font-bold capitalize z-10">#{{ post.tag }}</div>
                 {% else %}
-                    <div class="blog-tag absolute top-[15px] left-[15px] bg-[rgba(114,9,183,0.7)] text-white px-[10px] py-[5px] rounded font-bold text-xs capitalize z-10">#trends</div>
+                    <div class="absolute top-[15px] left-[15px] bg-[rgba(114,9,183,0.7)] text-white px-3 py-1 rounded text-xs font-bold capitalize z-10">#trends</div>
                 {% endif %}
                 <div class="p-4">
-                    <p class="text-muted text-[#b0b0d0] text-sm mb-1">
+                    <p class="text-sm text-[#b0b0d0] mb-2">
                         <i class="bi bi-calendar"></i> {{ post.date_posted|date:"F d, Y" }}<br>
-                        <a href="{% url 'user-posts' post.author.username %}" class="text-[#b0b0d0] hover:underline">{{ post.author }}</a>
+                        <a href="{% url 'user-posts' post.author.username %}" class="hover:underline">{{ post.author }}</a>
                     </p>
-                    <h5 class="text-white font-bold my-4 text-xl">
-                        <a href="{% url 'post-detail' post.id %}" class="text-inherit no-underline hover:underline">{{ post.title }}</a>
+                    <h5 class="text-white font-bold my-3 text-xl">
+                        <a href="{% url 'post-detail' post.id %}" class="hover:underline">{{ post.title }}</a>
                     </h5>
-                    <a href="{% url 'post-detail' post.id %}" class="read-more text-[#9c27b0] font-bold no-underline text-sm inline-block mt-2 hover:underline">Read full post →</a>
+                    <a href="{% url 'post-detail' post.id %}" class="text-[#9c27b0] font-bold text-sm hover:underline">Read full post →</a>
                     <div class="mt-4 flex justify-between items-center">
                         <form action="{% url 'like_post' post.id %}" method="POST">
                             {% csrf_token %}
-                            <button type="submit" class="text-white text-sm px-0 py-0 rounded-md transition-all duration-300 hover:text-blue-400 focus:outline-none">
+                            <button type="submit" class="text-white text-sm hover:text-red-400">
                                 {% if post.id in liked_posts %}
                                     <i class="bi bi-heart-fill text-red-500"></i>
                                 {% else %}
@@ -43,36 +66,35 @@
 
                         {% if post.author == request.user %}
                         <div>
-                            <a href="{% url 'post-update' post.id %}" class="text-white text-lg p-1 rounded-md mr-2 transition-all duration-300 hover:text-blue-400">
+                            <a href="{% url 'post-update' post.id %}" class="text-white text-lg p-1 rounded-md mr-2 hover:text-blue-400">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <a href="{% url 'post-delete' post.id %}" class="text-white text-lg p-1 rounded-md transition-all duration-300 hover:text-red-400">
+                            <a href="{% url 'post-delete' post.id %}" class="text-white text-lg p-1 hover:text-red-400">
                                 <i class="bi bi-trash"></i>
                             </a>
                         </div>
                         {% endif %}
                     </div>
-
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
+
     <button class="carousel-button absolute top-1/2 -translate-y-1/2 bg-transparent border-none text-white rounded-full w-10 h-10 text-xl cursor-pointer z-10 flex items-center justify-center transition-all duration-300 hover:bg-[#6a0dad] hover:text-white right-2 md:right-4" onclick="moveSlide(1)">&#10095;</button>
 </div>
 
+<!-- Carousel Script -->
 <script>
 let currentSlide = 0;
 const visibleCards = 3;
-const cardWidth = 330; // 300px card width + 30px gap
+const cardWidth = 330;
 const track = document.getElementById('carousel');
 const cards = document.querySelectorAll('.blog-card');
 
 function updateCarousel() {
     const offset = -currentSlide * cardWidth;
     track.style.transform = `translateX(${offset}px)`;
-
-    // Update active/inactive classes for visual feedback
     cards.forEach((card, idx) => {
         if (idx >= currentSlide && idx < currentSlide + visibleCards) {
             card.classList.add('scale-105', 'opacity-100');
@@ -90,7 +112,6 @@ function moveSlide(step) {
     updateCarousel();
 }
 
-// Initialize the carousel state on page load
 updateCarousel();
 </script>
 

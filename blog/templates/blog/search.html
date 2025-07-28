@@ -1,0 +1,64 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+<div class="min-h-screen bg-[#1a1a2e] py-10 px-4">
+    {% if posts %}
+        <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% for post in posts %}
+            <div class="blog-card bg-[#2a2a4a] rounded-2xl shadow-lg shadow-black/40 transition-all duration-300 pb-5 text-[#e0e0e0] relative border-2 border-transparent hover:-translate-y-2 hover:shadow-xl hover:shadow-[#9c27b0]/70 hover:border-[#9c27b0]/70">
+                <img src="{{ post.image.url }}" alt="Blog Thumbnail" class="w-full h-[180px] object-cover rounded-t-2xl">
+                
+                {% if post.tag %}
+                    <div class="absolute top-3 left-3 bg-[rgba(114,9,183,0.7)] text-white px-3 py-1 rounded font-bold text-xs capitalize z-10">#{{ post.tag }}</div>
+                {% else %}
+                    <div class="absolute top-3 left-3 bg-[rgba(114,9,183,0.7)] text-white px-3 py-1 rounded font-bold text-xs capitalize z-10">#trends</div>
+                {% endif %}
+
+                <div class="p-4">
+                    <p class="text-sm text-[#b0b0d0] mb-1">
+                        <i class="bi bi-calendar"></i> {{ post.date_posted|date:"F d, Y" }}<br>
+                        <a href="{% url 'user-posts' post.author.username %}" class="hover:underline">{{ post.author }}</a>
+                    </p>
+
+                    <h5 class="font-bold text-white text-lg my-3">
+                        <a href="{% url 'post-detail' post.id %}" class="hover:underline">{{ post.title }}</a>
+                    </h5>
+
+                    <a href="{% url 'post-detail' post.id %}" class="text-[#9c27b0] font-semibold text-sm hover:underline inline-block mt-2">Read full post →</a>
+
+                    <div class="mt-4 flex justify-between items-center">
+                        <!-- Like Button -->
+                        <form action="{% url 'like_post' post.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="text-white text-sm transition hover:text-blue-400">
+                                {% if post.id in liked_posts %}
+                                    <i class="bi bi-heart-fill text-red-500"></i>
+                                {% else %}
+                                    <i class="bi bi-heart"></i>
+                                {% endif %}
+                                <span class="ml-1">{{ post.total_likes }}</span>
+                            </button>
+                        </form>
+
+                        <!-- Edit/Delete Button -->
+                        {% if post.author == request.user %}
+                        <div class="flex items-center">
+                            <a href="{% url 'post-update' post.id %}" class="text-white text-lg px-2 hover:text-blue-400">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'post-delete' post.id %}" class="text-white text-lg px-2 hover:text-red-400">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-white text-center py-20 text-xl">
+            No blog posts available.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

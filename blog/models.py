@@ -19,7 +19,7 @@ class Post(models.Model):
         return reverse('post-detail',kwargs={'pk':self.pk})
     
     def total_likes(self):
-        return self.like_set.filter(liked=Ture).count()
+        return self.like_set.filter(liked=True).count()
     
 
 class Like(models.Model):
