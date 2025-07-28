@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .form import UserUpdateForm, UpdateProfileForm
 from django.contrib.auth.decorators import login_required
 from .models import profile,Notification
-
+from blog.models import Like,Post
 
 def register(request):
     if request.method=="POST":
@@ -48,3 +48,11 @@ def profileUpdate(request):
 def notification(request):
     notifications=Notification.objects.filter(receiver=request.user).order_by('-timestamp')
     return render(request,'users/notification.html',{'notifications':notifications})
+
+@login_required
+def likedBlogs(request):
+    user=request.user
+    liked_post_id=Like.objects.filter(user=user).values_list('post_id',flat=True)
+    posts=Post.objects.filter(id__in=liked_post_id)
+    return render(request,'users/likedBlogs.html',{'posts':posts})
+

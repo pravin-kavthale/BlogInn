@@ -47,6 +47,7 @@ urlpatterns = [
     path('comment/<int:pk>/update',CommentUpdateView.as_view(),name='comment-update'),
 
      path('search/',views.searchView.as_view(),name='search'),
+     path('liked-blogs/',user_views.likedBlogs,name='liked-blogs'),
 
     
 ]

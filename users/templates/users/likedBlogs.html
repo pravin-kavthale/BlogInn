@@ -1,0 +1,34 @@
+{% extends "blog/base.html" %}
+{% block content %}
+
+<div class="container mx-auto mt-10 p-4 bg-[#1a1a2e] rounded-2xl shadow-lg shadow-black/40 max-w-4xl relative z-10">
+
+    <!-- Profile Basic Info Overlay Section -->
+    <div class="bg-[#0f0f1a] p-6 rounded-xl shadow-lg mb-6 border border-[#292949]">
+        <h2 class="text-2xl font-bold text-white mb-2">Profile Overview</h2>
+        <p class="text-gray-400">Name: {{ request.user.username }}</p>
+        <p class="text-gray-400">Email: {{ request.user.email }}</p>
+        <!-- Add other basic info here -->
+    </div>
+
+    <!-- Liked Blogs Section -->
+    <div class="bg-[#2a2a4a] p-6 rounded-xl shadow-lg border border-[#3a3a5a]">
+        <h3 class="text-xl font-semibold text-purple-300 mb-4">❤️ Liked Blogs</h3>
+
+        {% if posts %}
+            <ul class="list-disc list-inside space-y-2">
+                {% for post in posts %}
+                    <li>
+                        <a href="{%url 'post-detail' post.id %}" class="text-white hover:text-purple-400 transition duration-200 font-medium">
+                            {{ post.title }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-400 italic">You haven't liked any blog posts yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
