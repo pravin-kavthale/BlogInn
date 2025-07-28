@@ -11,7 +11,8 @@ from .views import (
     PostUpdateView,
     PostDeleteView,
     UserPostListView,
-    CommentDeleteView
+    CommentDeleteView,
+    CommentUpdateView
     )
 
 
@@ -43,6 +44,7 @@ urlpatterns = [
     path('notification/',user_views.notification,name='notification'),
 
     path('comment/<int:pk>/delete',CommentDeleteView.as_view(),name='comment-delete'),
+    path('comment/<int:pk>/update',CommentUpdateView.as_view(),name='comment-update'),
 
     
 ]

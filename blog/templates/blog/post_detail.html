@@ -25,6 +25,10 @@
                                 <div class="flex items-center justify-between mb-1">
                                     <small class="text-xs text-gray-500">{{ com.sender.username }} | {{ com.created_at|date:"M d, Y H:i" }}</small>
                                     {% if com.sender == request.user %}
+                                        <a href="{% url 'comment-update' com.id %}" 
+                                            class="text-black text-lg p-1 rounded-md mr-2 transition-all duration-300 hover:text-blue-400">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
                                         <a href="{% url 'comment-delete' com.id %}"
                                            class="text-gray-600 hover:text-red-500 transition-colors duration-200"
                                            title="Delete Comment">

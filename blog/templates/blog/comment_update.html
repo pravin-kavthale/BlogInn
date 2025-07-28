@@ -1,0 +1,30 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">Update Your Comment</h2>
+
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+
+            <div>
+                <label for="id_content" class="block text-sm font-medium text-gray-700">Comment</label>
+                {{ form.content }}
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Update Comment
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-6">
+            <a href="{{ request.META.HTTP_REFERER }}" class="text-blue-500 hover:underline text-sm">
+                ← Go Back
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

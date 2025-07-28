@@ -111,6 +111,20 @@ class PostUpdateView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
         else:
             return False
 
+class CommentUpdateView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
+    model=Comment
+    fields=['content']
+    template_name='blog/comment_update.html'
+    def form_valid(self,form):
+        form.instance.sender=self.request.user
+        return super().form_valid(form)
+    def test_func(self):
+        comment=self.get_object()
+        return self.request.user == comment.sender
+    def get_success_url(self):
+        # Redirect back to the post detail page where this comment belongs
+        return reverse('post-detail', kwargs={'pk': self.object.post.pk})
+
 class PostDeleteView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
     model=Post
     success_url="/"
